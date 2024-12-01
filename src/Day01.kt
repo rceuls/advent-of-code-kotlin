@@ -13,14 +13,12 @@ fun main() {
 
     fun part2(firstList: List<Int>, secondList: List<Int>): Int {
         val counts = mutableMapOf<Int, Int>()
-        var simScore = 0
-        firstList.forEach {
-            if (it !in counts) {
-                counts[it] = secondList.count { sit -> sit == it }
+        return firstList.fold(0) { acc, next ->
+            if (next !in counts) {
+                counts[next] = secondList.count { sit -> sit == next }
             }
-            simScore += it * counts[it]!!
+            acc + (next * counts[next]!!)
         }
-        return simScore
     }
 
     val (firstListTest, secondListTest) = createLists(readInput("Day01_test"))
@@ -30,4 +28,5 @@ fun main() {
     val (firstList, secondList) = createLists(readInput("Day01"))
     part1(firstList, secondList).println()
     part2(firstList, secondList).println()
+
 }
