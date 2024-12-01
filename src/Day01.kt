@@ -1,21 +1,33 @@
+import kotlin.math.abs
+
 fun main() {
-    fun part1(input: List<String>): Int {
-        return input.size
+    fun createLists(input: List<String>): Pair<List<Int>, List<Int>> {
+        val pairs = input.map { it.split("\\s+".toRegex()).map(String::toInt) }
+        val firstList = pairs.map { it[0] }.sorted()
+        val secondList = pairs.map { it[1] }.sorted()
+        return Pair(firstList, secondList)
     }
 
-    fun part2(input: List<String>): Int {
-        return input.size
+    fun part1(firstList: List<Int>, secondList: List<Int>): Int =
+        firstList.zip(secondList).sumOf { abs(it.first - it.second) }
+
+    fun part2(firstList: List<Int>, secondList: List<Int>): Int {
+        val counts = mutableMapOf<Int, Int>()
+        var simScore = 0
+        firstList.forEach {
+            if (it !in counts) {
+                counts[it] = secondList.count { sit -> sit == it }
+            }
+            simScore += it * counts[it]!!
+        }
+        return simScore
     }
 
-    // Test if implementation meets criteria from the description, like:
-    check(part1(listOf("test_input")) == 1)
+    val (firstListTest, secondListTest) = createLists(readInput("Day01_test"))
+    check(part1(firstListTest, secondListTest) == 11)
+    check(part2(firstListTest, secondListTest) == 31)
 
-    // Or read a large test input from the `src/Day01_test.txt` file:
-    val testInput = readInput("Day01_test")
-    check(part1(testInput) == 1)
-
-    // Read the input from the `src/Day01.txt` file.
-    val input = readInput("Day01")
-    part1(input).println()
-    part2(input).println()
+    val (firstList, secondList) = createLists(readInput("Day01"))
+    part1(firstList, secondList).println()
+    part2(firstList, secondList).println()
 }
