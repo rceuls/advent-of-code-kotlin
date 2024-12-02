@@ -16,14 +16,12 @@ fun main() {
 
     fun part2(input: List<String>): Int = input.count { line ->
         val numberArray = line.toNumberArray()
-        if (numberArray.windowed(3).all { isValidForPart1(it) }) {
-            true
-        } else {
-            numberArray.indices.any { index ->
-                val newArray = numberArray.take(index) + numberArray.drop(index + 1)
-                newArray.windowed(3).all { isValidForPart1(it) }
-            }
-        }
+        numberArray.windowed(3).all { isValidForPart1(it) } ||
+                numberArray.indices.any { index ->
+                    (numberArray.take(index) + numberArray.drop(index + 1))
+                        .windowed(3)
+                        .all { isValidForPart1(it) }
+                }
     }
 
     val testData = readInput("Day02_test")
