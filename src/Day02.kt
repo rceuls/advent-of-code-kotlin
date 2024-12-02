@@ -3,9 +3,8 @@ import kotlin.math.abs
 fun main() {
     fun isValidForPart1(it: List<Int>): Boolean {
         val (first, second, third) = it
-        val firstSub = first - second
-        val secondSub = second - third
-        val isIncOrDec = ((firstSub > 0 && secondSub > 0) || (firstSub < 0 && secondSub < 0))
+        val (firstSub, secondSub) = first - second to second - third
+        val isIncOrDec = firstSub * secondSub > 0
         val isGoodInterval = abs(firstSub) in 1..3 && abs(secondSub) in 1..3
         return isIncOrDec && isGoodInterval
     }
