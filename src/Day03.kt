@@ -9,28 +9,28 @@ fun main() {
             ?: 0
     }.sum()
 
-    fun part1(input: List<String>): Int = input.sumOf { calculateMultipleFromString(it) }
+    fun part1(input: String): Int = calculateMultipleFromString(input)
 
-    fun part2(input: List<String>): Int {
+    fun part2(input: String): Int {
         var enabled = true
-        return input.sumOf {
-            p2Regex.findAll(it).sumOf { m ->
-                if (enabled && m.value.contains("mul")) {
-                    m.groups[3]!!.value.toInt() * m.groups[2]!!.value.toInt()
-                } else if (m.value == "do()") {
-                    enabled = true
-                    0
-                } else {
-                    enabled = false
-                    0
-                }
+        return p2Regex.findAll(input).sumOf { m ->
+            if (enabled && m.value.contains("mul")) {
+                m.groups[3]!!.value.toInt() * m.groups[2]!!.value.toInt()
+            } else if (m.value == "do()") {
+                enabled = true
+                0
+            } else {
+                enabled = false
+                0
             }
         }
     }
 
-    check(part1(readInput("Day03_test")) == 161)
-    check(part2(readInput("Day03p02_test")) == 48)
-    val data = readInput("Day03")
+    check(part1(readInputOneLine("Day03_test")) == 161)
+    check(part2(readInputOneLine("Day03p02_test")) == 48)
+    val data = readInputOneLine("Day03")
+    //188116424
+    //104245808
     part1(data).println()
-    part2(data).println() // 104245808 (H) 99724783 (L)
+    part2(data).println()
 }
