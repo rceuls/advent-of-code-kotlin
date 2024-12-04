@@ -4,6 +4,14 @@ fun main() {
             input.getOrNull(coordinates[i].first)?.getOrNull(coordinates[i].second) == target[i]
         }
 
+
+    fun getMatches(input: List<String>, checkAdj: (row: Int, column: Int) -> Int) =
+        (0..input.size).sumOf { row ->
+            (0..input[0].length).sumOf { column ->
+                checkAdj(row, column)
+            }
+        }
+
     fun part1(input: List<String>): Int {
         val word = "XMAS"
         fun checkAdj(row: Int, column: Int): Int {
@@ -19,11 +27,7 @@ fun main() {
                 adj.map { row - it to column + it },
             ).count { validate(it, word, input) }
         }
-        return (0..input.size).sumOf { row ->
-            (0..input[0].length).sumOf { column ->
-                checkAdj(row, column)
-            }
-        }
+        return getMatches(input) { row, column -> checkAdj(row, column) }
     }
 
     fun part2(input: List<String>): Int {
@@ -39,17 +43,13 @@ fun main() {
                 adj.map { row + it to column - it },
             )
             for (coords in listOf(coords1, coords2)) {
-                if (coords.count { validate(it, word, input) } == 0) {
+                if (coords.none { validate(it, word, input) }) {
                     return 0
                 }
             }
             return 1
         }
-        return (0..input.size).sumOf { row ->
-            (0..input[0].length).sumOf { column ->
-                checkAdj(row, column)
-            }
-        }
+        return getMatches(input) { row, column -> checkAdj(row, column) }
     }
 
     val testData = readInput("Day04_test")
