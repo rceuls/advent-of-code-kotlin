@@ -4,7 +4,6 @@ fun main() {
             input.getOrNull(coordinates[i].first)?.getOrNull(coordinates[i].second) == target[i]
         }
 
-
     fun getMatches(input: List<String>, checkAdj: (row: Int, column: Int) -> Int) =
         (0..input.size).sumOf { row ->
             (0..input[0].length).sumOf { column ->
