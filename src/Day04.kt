@@ -16,8 +16,9 @@ fun main() {
     }
 
     fun part1(input: List<String>): Int {
+        val word = "XMAS"
         fun checkAdj(row: Int, column: Int): Int {
-            val adj = listOf(0, 1, 2, 3)
+            val adj = word.mapIndexed { index, _ -> index }
             return listOf(
                 adj.map { row to column + it },
                 adj.map { row to column - it },
@@ -27,29 +28,21 @@ fun main() {
                 adj.map { row - it to column - it },
                 adj.map { row + it to column - it },
                 adj.map { row - it to column + it },
-            ).count { validate(it, "XMAS", input) }
+            ).count { validate(it, word, input) }
         }
-
-        val width = input[0].length
-        val height = input.size
-        var cnt = 0
-        for (row in 0..height) {
-            for (column in 0..<width) {
-                val c = input.getOrNull(row)?.getOrNull(column)
-                if (c == 'X') {
-                    cnt += checkAdj(row, column)
-                }
+        return (0..input.size).sumOf { row ->
+            (0..input[0].length).sumOf { column ->
+                input.getOrNull(row)?.getOrNull(column)?.let { checkAdj(row, column) } ?: 0
             }
         }
-        return cnt
     }
 
     fun part2(input: List<String>): Int {
-        fun checkAdj(row: Int, column: Int): Boolean {
+        fun checkAdj(row: Int, column: Int): Int {
             val adj = listOf(-1, 0, 1)
             val coords1 = listOf(
                 adj.map { row + it to column + it },
-                adj.map { row - it to column - it },
+                adj.map { row - it to column - it }
             )
             val coords2 = listOf(
                 adj.map { row - it to column + it },
@@ -57,24 +50,16 @@ fun main() {
             )
             for (coords in listOf(coords1, coords2)) {
                 if (coords.count { validate(it, "MAS", input) } == 0) {
-                    return false
+                    return 0
                 }
             }
-            return true
+            return 1
         }
-
-        val width = input[0].length
-        val height = input.size
-        var cnt = 0
-        for (row in 0..height) {
-            for (column in 0..<width) {
-                val c = input.getOrNull(row)?.getOrNull(column)
-                if (c == 'A' && checkAdj(row, column)) {
-                    cnt++
-                }
+        return (0..input.size).sumOf { row ->
+            (0..input[0].length).sumOf { column ->
+                input.getOrNull(row)?.getOrNull(column)?.let { checkAdj(row, column) } ?: 0
             }
         }
-        return cnt
     }
 
     val testData = readInput("Day04_test")
