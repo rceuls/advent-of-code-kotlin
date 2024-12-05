@@ -43,17 +43,20 @@ fun main() {
             }.sumOf { it.takeMiddle() }
         }
 
-    val testData = readFile("Day05_test")
-    val timeTakenTests = measureTime {
-        check(part1(testData) == 143)
-        check(part2(testData) == 123)
-    }
-    "Tests: $timeTakenTests".println()
+    val timeTakenTotal = measureTime {
+        val testData = readFile("Day05_test")
+        val timeTakenTests = measureTime {
+            check(part1(testData) == 143)
+            check(part2(testData) == 123)
+        }
+        "Tests: $timeTakenTests".println()
 
-    val actualData = readFile("Day05")
-    val timeTaken = measureTime {
-        part1(actualData).println() // 4578
-        part2(actualData).println() // 6179
+        val actualData = readFile("Day05")
+        val timeTaken = measureTime {
+            part1(actualData).println() // 4578
+            part2(actualData).println() // 6179
+        }
+        "Actual: $timeTaken".println()
     }
-    "Actual: $timeTaken".println()
+    "Total: $timeTakenTotal".println()
 }
