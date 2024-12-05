@@ -7,21 +7,21 @@ fun main() {
             first.map {
                 val parts = it.split("|").map(String::toInt)
                 parts[0] to parts[1]
-            } to second.map { it.split(",").map(String::toInt) }
+            }.toSet() to second.map { it.split(",").map(String::toInt) }
         }
 
     fun List<Int>.takeMiddle() = this[this.size / 2]
 
     fun isCorrectLine(
-        line: List<Int>, correctOrder: List<Pair<Int, Int>>
+        line: List<Int>, correctOrder: Set<Pair<Int, Int>>
     ) = line.indices.all { ci ->
         (ci + 1..<line.size).all { (line[ci] to line[it]) in correctOrder }
     }
 
-    fun part1(input: Pair<List<Pair<Int, Int>>, List<List<Int>>>): Int =
+    fun part1(input: Pair<Set<Pair<Int, Int>>, List<List<Int>>>): Int =
         input.second.filter { line -> isCorrectLine(line, input.first) }.sumOf { it.takeMiddle() }
 
-    fun part2(input: Pair<List<Pair<Int, Int>>, List<List<Int>>>): Int =
+    fun part2(input: Pair<Set<Pair<Int, Int>>, List<List<Int>>>): Int =
         input.let { (correctOrder, lines) ->
             lines.filterNot { isCorrectLine(it, correctOrder) }.map { line ->
                 line.toMutableList().apply {
