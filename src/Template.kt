@@ -6,6 +6,8 @@ fun main() {
     fun part1(input: List<String>): Int = input.size
     fun part2(input: List<String>): Int = input.size
 
+    var p1: Int
+    var p2: Int
     val timeTakenTotal = measureTime {
         val testData = readInput("${dayNumber}_test")
         val timeTakenTests = measureTime {
@@ -16,10 +18,12 @@ fun main() {
 
         val actualData = readInput(dayNumber)
         val timeTaken = measureTime {
-            part1(actualData).println()
-            part2(actualData).println()
+            p1 = part1(actualData)
+            p2 = part2(actualData)
         }
         "Actual: $timeTaken".println()
     }
     "Total: $timeTakenTotal".println()
+    p1.println()
+    p2.println()
 }
