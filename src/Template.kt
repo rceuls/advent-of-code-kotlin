@@ -14,16 +14,16 @@ fun main() {
             check(part1(testData) == 0)
             check(part2(testData) == 0)
         }
-        "Tests: $timeTakenTests".println()
+        "Tests: $timeTakenTests".prettyPrint("#FBD8C6")
 
         val actualData = readInput(dayNumber)
         val timeTaken = measureTime {
             p1 = part1(actualData)
             p2 = part2(actualData)
         }
-        "Actual: $timeTaken".println()
+        "Actual: $timeTaken".prettyPrint("#FBD8C6")
     }
-    "Total: $timeTakenTotal".println()
-    p1.println()
-    p2.println()
+    "Total: $timeTakenTotal".prettyPrint("#FBC6CF")
+    p1.prettyPrint("#FBC6EA")
+    p2.prettyPrint("#FBC6EB")
 }

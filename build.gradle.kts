@@ -13,3 +13,7 @@ tasks {
         gradleVersion = "8.11"
     }
 }
+
+dependencies {
+    implementation("com.github.ajalt.mordant:mordant-jvm:3.0.1")
+}
