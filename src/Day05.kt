@@ -1,3 +1,5 @@
+import kotlin.time.measureTime
+
 fun main() {
     fun readFile(name: String) = readInputOneLine(name)
         .split("\n\n")
@@ -42,10 +44,16 @@ fun main() {
         }
 
     val testData = readFile("Day05_test")
-    check(part1(testData) == 143)
-    check(part2(testData) == 123)
+    val timeTakenTests = measureTime {
+        check(part1(testData) == 143)
+        check(part2(testData) == 123)
+    }
+    "Tests: $timeTakenTests".println()
 
     val actualData = readFile("Day05")
-    part1(actualData).println() // 4578
-    part2(actualData).println() // 6179
+    val timeTaken = measureTime {
+        part1(actualData).println() // 4578
+        part2(actualData).println() // 6179
+    }
+    "Actual: $timeTaken".println()
 }
