@@ -73,7 +73,7 @@ fun main() {
         current: Coordinate,
         direction: Direction,
         grid: Grid
-    ): Pair<Boolean, List<Coordinate>> =
+    ): Boolean =
         isBlocked(direction, current, grid).let { blocked ->
             val newCoordinate = Coordinate(
                 current.row + direction.row,
@@ -91,10 +91,10 @@ fun main() {
                             grid
                         )
                     } else {
-                        true to accumulator
+                        true
                     }
 
-                else -> false to accumulator
+                else -> false
             }
         }
 
@@ -122,8 +122,8 @@ fun main() {
                     if (input[i][j] != '#' && (i to j) in happyPath) {
                         val changedGrid = input.toList().map { it.toMutableList() }
                         changedGrid[i][j] = '#'
-                        val steps = stepWithLoopDetection(listOf(startingCoords), startingCoords, Direction.UP, changedGrid)
-                        if (steps.first) {
+                        val isLoopy = stepWithLoopDetection(listOf(startingCoords), startingCoords, Direction.UP, changedGrid)
+                        if (isLoopy) {
                             synchronized(obstaclesWithLoop) { obstaclesWithLoop.add(Coordinate(i, j)) }
                         }
                     }
@@ -153,6 +153,6 @@ fun main() {
         "Actual: $timeTaken".prettyPrint("#FBD8C6")
     }
     "Total: $timeTakenTotal".prettyPrint("#FBC6CF")
-    p1.prettyPrint("#FBC6EA") // 5131
-    p2.prettyPrint("#FBC6EB") // 217 == too low
+    p1.prettyPrint("#FBC6EA")
+    p2.prettyPrint("#FBC6EB")
 }
