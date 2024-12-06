@@ -119,9 +119,9 @@ fun main() {
         for (i in input.indices) {
             for (j in input[i].indices) {
                 jobs += launch(Dispatchers.Default) {
-                    if (input[i][j] != '#' && (i to j) in happyPath) {
+                    if (input[i][j] != BLOCKER && (i to j) in happyPath) {
                         val changedGrid = input.toList().map { it.toMutableList() }
-                        changedGrid[i][j] = '#'
+                        changedGrid[i][j] = BLOCKER
                         val isLoopy = stepWithLoopDetection(listOf(startingCoords), startingCoords, Direction.UP, changedGrid)
                         if (isLoopy) {
                             synchronized(obstaclesWithLoop) { obstaclesWithLoop.add(Coordinate(i, j)) }
