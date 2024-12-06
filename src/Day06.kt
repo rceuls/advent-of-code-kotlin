@@ -118,21 +118,17 @@ fun main() {
         val onlyStraight = happyPath
             .filterIndexed { i, coordinate ->
                 happyPath.getOrNull(i - 1)?.visitedDirection == coordinate.visitedDirection
-            }.map { it.row to it.col }
+            }.map { it.row to it.col }.toSet()
 
         val jobs = mutableListOf<Job>()
-        for (i in input.indices) {
-            for (j in input[i].indices) {
-                jobs += launch(Dispatchers.Default) {
-                    if ((i to j) in onlyStraight) {
-                        val changedGrid = input.toList().map { it.toMutableList() }
-                        changedGrid[i][j] = BLOCKER
-                        val isLoopy =
-                            stepWithLoopDetection(listOf(startingCoords), startingCoords, Direction.UP, changedGrid)
-                        if (isLoopy) {
-                            synchronized(this) { obstaclesWithLoop++ }
-                        }
-                    }
+        onlyStraight.forEach { (i, j) ->
+            jobs += launch(Dispatchers.Default) {
+                val changedGrid = input.toList().map { it.toMutableList() }
+                changedGrid[i][j] = BLOCKER
+                val isLoopy =
+                    stepWithLoopDetection(listOf(startingCoords), startingCoords, Direction.UP, changedGrid)
+                if (isLoopy) {
+                    synchronized(this) { obstaclesWithLoop++ }
                 }
             }
         }
