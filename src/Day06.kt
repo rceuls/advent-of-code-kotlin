@@ -93,7 +93,6 @@ fun main() {
                     } else {
                         true
                     }
-
                 else -> false
             }
         }
@@ -112,7 +111,7 @@ fun main() {
 
     fun part2(input: Grid): Int = runBlocking {
         val startingCoords: Coordinate = getStartingCoordinates(input) ?: throw Exception("No starting coordinates.")
-        val obstaclesWithLoop: MutableSet<Coordinate> = mutableSetOf()
+        var obstaclesWithLoop = 0
         val happyPath = step(listOf(startingCoords), startingCoords, Direction.UP, input).map { it.row to it.col }
 
         val jobs = mutableListOf<Job>()
@@ -122,9 +121,10 @@ fun main() {
                     if (input[i][j] != BLOCKER && (i to j) in happyPath) {
                         val changedGrid = input.toList().map { it.toMutableList() }
                         changedGrid[i][j] = BLOCKER
-                        val isLoopy = stepWithLoopDetection(listOf(startingCoords), startingCoords, Direction.UP, changedGrid)
+                        val isLoopy =
+                            stepWithLoopDetection(listOf(startingCoords), startingCoords, Direction.UP, changedGrid)
                         if (isLoopy) {
-                            synchronized(obstaclesWithLoop) { obstaclesWithLoop.add(Coordinate(i, j)) }
+                            synchronized(this) { obstaclesWithLoop++ }
                         }
                     }
                 }
@@ -133,7 +133,8 @@ fun main() {
 
         jobs.forEach { it.join() }
 
-        return@runBlocking obstaclesWithLoop.size    }
+        return@runBlocking obstaclesWithLoop
+    }
 
     var p1: Int
     var p2: Int
