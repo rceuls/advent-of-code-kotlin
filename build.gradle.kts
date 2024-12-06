@@ -16,4 +16,5 @@ tasks {
 
 dependencies {
     implementation("com.github.ajalt.mordant:mordant-jvm:3.0.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
 }
