@@ -82,6 +82,7 @@ fun main() {
             return when (blocked) {
                 true ->
                     stepWithLoopDetection(accumulator, current, direction.next(), grid)
+
                 false ->
                     if (newCoordinate !in accumulator) {
                         stepWithLoopDetection(
@@ -93,6 +94,7 @@ fun main() {
                     } else {
                         true
                     }
+
                 else -> false
             }
         }
@@ -112,13 +114,17 @@ fun main() {
     fun part2(input: Grid): Int = runBlocking {
         val startingCoords: Coordinate = getStartingCoordinates(input) ?: throw Exception("No starting coordinates.")
         var obstaclesWithLoop = 0
-        val happyPath = step(listOf(startingCoords), startingCoords, Direction.UP, input).map { it.row to it.col }
+        val happyPath = step(listOf(startingCoords), startingCoords, Direction.UP, input)
+        val onlyStraight = happyPath
+            .filterIndexed { i, coordinate ->
+                happyPath.getOrNull(i - 1)?.visitedDirection == coordinate.visitedDirection
+            }.map { it.row to it.col }
 
         val jobs = mutableListOf<Job>()
         for (i in input.indices) {
             for (j in input[i].indices) {
                 jobs += launch(Dispatchers.Default) {
-                    if (input[i][j] != BLOCKER && (i to j) in happyPath) {
+                    if ((i to j) in onlyStraight) {
                         val changedGrid = input.toList().map { it.toMutableList() }
                         changedGrid[i][j] = BLOCKER
                         val isLoopy =
