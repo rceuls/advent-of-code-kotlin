@@ -1,3 +1,4 @@
+import kotlinx.coroutines.*
 import java.math.BigInteger
 import kotlin.time.measureTime
 
@@ -15,15 +16,19 @@ fun main() {
         return calc(total, op * ops[0], ops.drop(1)) || calc(total, op + ops[0], ops.drop(1))
     }
 
-    fun part1(input: List<Line>): BigInteger {
+    fun part1(input: List<Line>): BigInteger = runBlocking {
         var bigTotal: BigInteger = BigInteger.ZERO
+        val jobs = mutableListOf<Job>()
         for (line in input) {
-            val (total, components) = line
-            if (calc(total, components[0], components.drop(1))) {
-                bigTotal += total
+            jobs += launch(Dispatchers.Default) {
+                val (total, components) = line
+                if (calc(total, components[0], components.drop(1))) {
+                    bigTotal += total
+                }
             }
         }
-        return bigTotal
+        jobs.forEach { it.join() }
+        return@runBlocking bigTotal
     }
 
     fun calc2(total: BigInteger, op: BigInteger, ops: List<BigInteger>): Boolean {
@@ -33,15 +38,19 @@ fun main() {
                 || calc2(total, "$op${ops[0]}".toBigInteger(), ops.drop(1))
     }
 
-    fun part2(input: List<Line>): BigInteger {
+    fun part2(input: List<Line>): BigInteger = runBlocking {
         var bigTotal: BigInteger = BigInteger.ZERO
+        val jobs = mutableListOf<Job>()
         for (line in input) {
-            val (total, components) = line
-            if (calc2(total, components[0], components.drop(1))) {
-                bigTotal += total
+            jobs += launch(Dispatchers.Default) {
+                val (total, components) = line
+                if (calc2(total, components[0], components.drop(1))) {
+                    synchronized(this) { bigTotal += total }
+                }
             }
         }
-        return bigTotal
+        jobs.forEach { it.join() }
+        return@runBlocking bigTotal
     }
 
     var p1: BigInteger
