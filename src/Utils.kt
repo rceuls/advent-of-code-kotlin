@@ -17,4 +17,5 @@ fun Any?.println() = println(this)
 fun Any?.prettyPrint(rgbHex: String) =
     Terminal().println(TextColors.rgb(rgbHex)(this.toString()))
 
-fun String.toNumberArray() = this.split(" ").map { it.toInt() }
+fun String.toNumberArray() = this.trim().split(" ").map { it.toInt() }
+fun String.toBigIntArray() = this.trim().split(" ").map { it.toBigInteger() }
