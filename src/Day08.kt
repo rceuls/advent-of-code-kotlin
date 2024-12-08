@@ -26,9 +26,9 @@ fun main() {
                     v.filterNot { base == it }.forEach { other ->
                         val (rowAdj, colAdj) = base.row - other.row to base.col - other.col
                         for(i in input.indices) {
-                            val newCoodinate = Coordinate(base.row + (rowAdj * i), base.col + (colAdj * i))
-                            if (newCoodinate.row in input.indices && newCoodinate.col in input[0].indices) {
-                                ghosts.add(newCoodinate)
+                            val newCoordinate = Coordinate(base.row + (rowAdj * i), base.col + (colAdj * i))
+                            if (newCoordinate.row in input.indices && newCoordinate.col in input[0].indices) {
+                                ghosts.add(newCoordinate)
                             }
                         }
                     }
