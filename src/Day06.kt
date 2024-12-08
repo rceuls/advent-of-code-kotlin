@@ -16,17 +16,17 @@ inline fun <reified T : Enum<T>> T.next(): T {
 
 typealias Grid = List<MutableList<Char>>
 
-data class Coordinate(val row: Int, val col: Int, val visitedDirection: Direction = Direction.UP)
+data class DirectionCoordinate(val row: Int, val col: Int, val visitedDirection: Direction = Direction.UP)
 
 fun main() {
     val dayNumber = "Day06"
 
-    fun getStartingCoordinates(input: Grid): Coordinate? {
-        var startingCoords: Coordinate? = null
+    fun getStartingCoordinates(input: CharGrid): DirectionCoordinate? {
+        var startingCoords: DirectionCoordinate? = null
         for (i in input.indices) {
             for (j in input[i].indices) {
                 if (input[i][j] == '^') {
-                    startingCoords = Coordinate(i, j, Direction.UP)
+                    startingCoords = DirectionCoordinate(i, j, Direction.UP)
                     break
                 }
             }
@@ -34,19 +34,19 @@ fun main() {
         return startingCoords
     }
 
-    fun isBlocked(direction: Direction, currentCoordinate: Coordinate, grid: Grid): Boolean? =
+    fun isBlocked(direction: Direction, currentCoordinate: DirectionCoordinate, grid: Grid): Boolean? =
         grid.getOrNull(currentCoordinate.row + direction.row)?.getOrNull(currentCoordinate.col + direction.col)
             ?.let { it == BLOCKER }
 
 
     tailrec fun step(
-        accumulator: List<Coordinate> = emptyList(), current: Coordinate, direction: Direction, grid: Grid
-    ): List<Coordinate> = isBlocked(direction, current, grid).let { blocked ->
+        accumulator: List<DirectionCoordinate> = emptyList(), current: DirectionCoordinate, direction: Direction, grid: Grid
+    ): List<DirectionCoordinate> = isBlocked(direction, current, grid).let { blocked ->
         return when (blocked) {
             true -> step(accumulator, current, direction.next(), grid)
 
             false -> {
-                val newCoordinate = Coordinate(current.row + direction.row, current.col + direction.col, direction)
+                val newCoordinate = DirectionCoordinate(current.row + direction.row, current.col + direction.col, direction)
                 step(
                     accumulator + newCoordinate, newCoordinate, direction, grid
                 )
@@ -57,9 +57,9 @@ fun main() {
     }
 
     tailrec fun stepWithLoopDetection(
-        accumulator: List<Coordinate> = emptyList(), current: Coordinate, direction: Direction, grid: Grid
+        accumulator: List<DirectionCoordinate> = emptyList(), current: DirectionCoordinate, direction: Direction, grid: Grid
     ): Boolean = isBlocked(direction, current, grid).let { blocked ->
-        val newCoordinate = Coordinate(
+        val newCoordinate = DirectionCoordinate(
             current.row + direction.row, current.col + direction.col, direction
         )
         return when (blocked) {
@@ -79,14 +79,14 @@ fun main() {
 
 
     fun part1(input: Grid): Int {
-        val startingCoords: Coordinate = getStartingCoordinates(input) ?: throw Exception("No starting coordinates.")
+        val startingCoords: DirectionCoordinate = getStartingCoordinates(input) ?: throw Exception("No starting coordinates.")
         return step(
             listOf(startingCoords), startingCoords, Direction.UP, input
         ).map { it.row to it.col }.toSet().size
     }
 
     fun part2(input: Grid): Int = runBlocking {
-        val startingCoords: Coordinate = getStartingCoordinates(input) ?: throw Exception("No starting coordinates.")
+        val startingCoords: DirectionCoordinate = getStartingCoordinates(input) ?: throw Exception("No starting coordinates.")
         var obstaclesWithLoop = 0
         val happyPath = step(listOf(startingCoords), startingCoords, Direction.UP, input)
         val onlyStraight = happyPath.filterIndexed { i, coordinate ->
