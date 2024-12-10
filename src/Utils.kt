@@ -4,6 +4,13 @@ import kotlin.io.path.Path
 import kotlin.io.path.readText
 
 typealias CharGrid = List<List<Char>>
+typealias IntGrid = List<List<Int>>
+
+fun IntGrid.toMappedGrid() = this.flatMapIndexed { row, rowLine ->
+    rowLine.mapIndexed { col, c ->
+        Coordinate(row, col) to c
+    }
+}.toMap().withDefault { -1 }
 
 data class Coordinate(val row: Int, val col: Int)
 
@@ -13,6 +20,7 @@ data class Coordinate(val row: Int, val col: Int)
 fun readInput(name: String) = Path("src/$name.txt").readText().trim().lines()
 fun readInputOneLine(name: String) = Path("src/$name.txt").readText().trim()
 fun readInputCharGrid(name: String): CharGrid = readInput(name).map { it -> it.toList() }
+fun readInputIntGrid(name: String): IntGrid = readInput(name).map { it -> it.map { c -> c.digitToInt() } }
 
 /**
  * The cleaner shorthand for printing output.
@@ -55,3 +63,14 @@ fun CharGrid.createCoordinateGrid(): MutableMap<Char, MutableList<Coordinate>> {
     }
     return coordinateMap
 }
+
+
+@Suppress("unused")
+enum class Direction(val row: Int, val col: Int) {
+    UP(-1, 0), RIGHT(0, 1), DOWN(1, 0), LEFT(0, -1),
+}
+
+fun Coordinate.neighbours() =
+    Direction.entries.map {
+        Coordinate(this.row + it.row, this.col + it.col)
+    }
