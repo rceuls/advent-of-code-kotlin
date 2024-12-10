@@ -3,85 +3,52 @@ import kotlin.time.measureTime
 fun main() {
     val dayNumber = "Day09"
 
-    fun convertInput(input: String): MutableList<Long> {
-        var currDigit = 0L
-        val line = mutableListOf<Long>()
-        input.map { it.digitToInt() }.forEachIndexed { i, c ->
-            if (i % 2 == 0) {
-                line += (0..<c).map { currDigit }
-                currDigit++
-            } else {
-                line += (0..<c).map { -1 }
-            }
+    data class Block(val position: Int, val length: Int, val id: Int)
+
+    fun parse(input: String): Pair<MutableList<Block>, MutableList<Block>> {
+        val spaces = mutableListOf<Block>()
+        val files = mutableListOf<Block>()
+
+        var position = 0
+        input.map { it.digitToInt() }.forEachIndexed { i, length ->
+            (if (i % 2 == 0) files else spaces).add(Block(position, length, i / 2))
+            position += length
         }
-        return line
+
+        return spaces to files
     }
 
-    fun part1(input: String): Long {
-        val line = convertInput(input)
-        line.indices.forEach { i ->
-            if (i < line.size) {
-                if (line[i] == -1L) {
-                    var last = line.removeLast()
-                    while (last == -1L)
-                        last = line.removeLast()
-                    line[i] = last
+    fun calc(spaces: MutableList<Block>, files: MutableList<Block>): Long {
+        for (fi in files.indices.reversed()) {
+            val (fp, fl, fid) = files[fi]
+
+            for (si in spaces.indices) {
+                val (sp, sl, sid) = spaces[si]
+
+                if (sp >= fp) break
+
+                if (sl >= fl) {
+                    files[fi] = Block(sp, fl, fid)
+                    spaces[si] = Block(sp + fl, sl - fl, sid)
+                    break
                 }
             }
         }
-        return line.mapIndexed { index, c -> index * c }.sumOf { it }
+
+        return files.sumOf { f -> (0..<f.length).sumOf { i -> f.id.toLong() * (f.position + i) } }
+    }
+
+
+    fun part1(input: String): Long {
+        val (spaces, files) = parse(input)
+        val spacesFlattened = spaces.flatMap { s -> (0..<s.length).map { i -> Block(s.position + i, 1, s.id) } }
+        val filesFlattened = files.flatMap { f -> (0..<f.length).map { i -> Block(f.position + i, 1, f.id) } }
+        return calc(spacesFlattened.toMutableList(), filesFlattened.toMutableList())
     }
 
     fun part2(input: String): Long {
-//        val line = convertInput(input)
-//        while (true) {
-//            var grandOffset = 0
-//            val previous = line.toList()
-//            while (true) {
-//                var reversed = line.reversed().drop(grandOffset)
-//                if (reversed.none { it == -1L }) {
-//                    break
-//                }
-//                var firstIndexFill = reversed.indexOfFirst { it != -1L }
-//                if (firstIndexFill > 0) {
-//                    reversed = reversed.drop(firstIndexFill)
-//                    grandOffset += firstIndexFill
-//                }
-//                firstIndexFill = reversed.indexOfFirst { it != -1L }
-//                val lastIndexFill = reversed.indexOfFirst { it != reversed[firstIndexFill] }
-//
-//                var offset = 0
-//
-//                while (true) {
-//                    val subLine = line.drop(offset)
-//                    var firstIndexEmpty = subLine.indexOf(-1L)
-//                    var lastIndexEmpty = subLine.drop(firstIndexEmpty).indexOfFirst { it != -1L } + firstIndexEmpty
-//                    firstIndexEmpty += offset
-//                    lastIndexEmpty += offset
-//                    if (abs(firstIndexEmpty - lastIndexEmpty) < abs(lastIndexFill - firstIndexFill)) {
-//                        offset = lastIndexEmpty
-//                        if (offset > subLine.size) {
-//                            break
-//                        }
-//                    } else {
-//                        for (i in 0 until (lastIndexFill - firstIndexFill)) {
-//                            line[i + firstIndexEmpty] = reversed[firstIndexFill]
-//                            line[line.size - firstIndexFill - i - grandOffset - 1] = -1
-//                        }
-//                        break
-//                    }
-//                }
-//                grandOffset += abs(firstIndexFill - lastIndexFill)
-//                if (grandOffset == line.size) {
-//                    break
-//                }
-//            }
-//            if (line == previous) {
-//                break
-//            }
-//        }
-        return 0L
-    }
+        val (spaces, files) = parse(input)
+        return calc(spaces.toMutableList(), files.toMutableList())    }
 
     var p1: Long
     var p2: Long
