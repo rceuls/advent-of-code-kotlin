@@ -73,4 +73,4 @@ enum class Direction(val row: Int, val col: Int) {
 fun Coordinate.neighbours() =
     Direction.entries.map {
         Coordinate(this.row + it.row, this.col + it.col)
-    }
+    }.toSet()
