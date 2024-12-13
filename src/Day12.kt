@@ -43,19 +43,19 @@ fun main() {
 
     fun assembleEdges(area: Set<Coordinate>): Int {
         val fenceParts = area.flatMap { it.neighbours().filterNot { neighbour -> neighbour in area } }.toMutableSet()
-        val removed = mutableSetOf<Coordinate>()
-        val workingList = mutableSetOf<Coordinate>()
-        var edges = 0
-
-        for (fp in fenceParts) {
-            removed.add(fp)
-            if (fp.neighbours().none { neighbour -> neighbour in removed }) {
-                workingList += fp
-                edges += 1
+        val reducedNeighbours = mutableSetOf<Coordinate>()
+        for (v in fenceParts) {
+            if (v.neighbours().none { it in reducedNeighbours }) {
+                reducedNeighbours.add(v)
             }
         }
 
-        return workingList.size
+        var count = 0
+        for (fp in reducedNeighbours) {
+            val areaMatch = area.count { it in fp.neighbours() }
+            count += areaMatch
+        }
+        return count
     }
 
     fun part2(input: CharGrid): Int {
@@ -77,7 +77,7 @@ fun main() {
     val timeTakenTotal = measureTime {
         val testData = readInputCharGrid("${dayNumber}_test")
         val timeTakenTests = measureTime {
-            // check(part1(testData) == 1930)
+            check(part1(testData) == 1930)
             check(part2(testData) == 1206)
         }
         "Tests: $timeTakenTests".prettyPrint("#FBD8C6")
