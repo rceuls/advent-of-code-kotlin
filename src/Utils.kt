@@ -2,6 +2,7 @@ import com.github.ajalt.mordant.rendering.TextColors
 import com.github.ajalt.mordant.terminal.Terminal
 import kotlin.io.path.Path
 import kotlin.io.path.readText
+import kotlin.time.measureTime
 
 typealias CharGrid = List<List<Char>>
 typealias IntGrid = List<List<Int>>
@@ -74,3 +75,12 @@ fun Coordinate.neighbours() =
     Direction.entries.map {
         Coordinate(this.row + it.row, this.col + it.col)
     }.toSet()
+
+
+fun <T> execute(first: () -> T, second: () -> T) {
+    val measure = measureTime {
+        first().println()
+        second().println()
+    }
+    "Total: $measure".prettyPrint("#FBC6CF")
+}
