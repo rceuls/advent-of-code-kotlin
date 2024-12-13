@@ -71,6 +71,13 @@ enum class Direction(val row: Int, val col: Int) {
     UP(-1, 0), RIGHT(0, 1), DOWN(1, 0), LEFT(0, -1),
 }
 
+@Suppress("unused")
+enum class Compass(val row: Int, val col: Int) {
+    N(-1, 0), E(0, 1), S(1, 0), W(0, -1),
+    NE(-1, 1), NW(-1, -1), SE(1, 1), SW(1, -1)
+}
+
+
 fun Coordinate.neighbours() =
     Direction.entries.map {
         Coordinate(this.row + it.row, this.col + it.col)

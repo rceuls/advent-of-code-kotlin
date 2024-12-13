@@ -41,19 +41,31 @@ fun main() {
         return groups.sumOf { it.second * it.third }
     }
 
-    fun assembleEdges(area: Set<Coordinate>): Int {
-        val fenceParts = area.flatMap { it.neighbours().filterNot { neighbour -> neighbour in area } }.toMutableSet()
-        val reducedNeighbours = mutableSetOf<Coordinate>()
-        for (v in fenceParts) {
-            if (v.neighbours().none { it in reducedNeighbours }) {
-                reducedNeighbours.add(v)
-            }
-        }
-
+    fun assembleEdges(area: Set<Coordinate>, input: CharGrid): Int {
         var count = 0
-        for (fp in reducedNeighbours) {
-            val areaMatch = area.count { it in fp.neighbours() }
-            count += areaMatch
+        for (a in area) {
+            val base = input[a.row][a.col]
+            val samesies =
+                listOf(
+                    Compass.N,
+                    Compass.S,
+                    Compass.E,
+                    Compass.W,
+                    Compass.NW,
+                    Compass.NE,
+                    Compass.SW
+                )
+                    .associateBy({ it }, { (input.getOrNull(a.row + it.row)?.getOrNull(a.col + it.col) == base) })
+
+
+            if (!samesies.getValue(Compass.N) && !(samesies.getValue(Compass.W) && !samesies.getValue(Compass.NW)))
+                count += 1
+            if (!samesies.getValue(Compass.W) && !(samesies.getValue(Compass.N) && !samesies.getValue(Compass.NW)))
+                count += 1
+            if (!samesies.getValue(Compass.E) && !(samesies.getValue(Compass.N) && !samesies.getValue(Compass.NE)))
+                count += 1
+            if (!samesies.getValue(Compass.S) && !(samesies.getValue(Compass.W) && !samesies.getValue(Compass.SW)))
+                count += 1
         }
         return count
     }
@@ -66,7 +78,7 @@ fun main() {
             if (c.first !in visited) {
                 val vis = assembleItems(c, input, mutableListOf(c)).map { it.first }.toSet()
                 visited += vis
-                groups.add(Triple(c.second, vis.size, assembleEdges(vis)))
+                groups.add(Triple(c.second, vis.size, assembleEdges(vis, input)))
             }
         }
         return groups.sumOf { it.second * it.third }
@@ -78,6 +90,7 @@ fun main() {
         val testData = readInputCharGrid("${dayNumber}_test")
         val timeTakenTests = measureTime {
             check(part1(testData) == 1930)
+            part2(testData).println()
             check(part2(testData) == 1206)
         }
         "Tests: $timeTakenTests".prettyPrint("#FBD8C6")
