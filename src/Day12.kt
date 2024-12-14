@@ -23,7 +23,6 @@ fun main() {
         }
     }
 
-
     fun getEdges(vis: Set<Coordinate>): Int =
         vis.sumOf { v -> 4 - v.neighbours().count { neighbour -> neighbour in vis } }
 
@@ -41,34 +40,28 @@ fun main() {
         return groups.sumOf { it.second * it.third }
     }
 
-    fun assembleEdges(area: Set<Coordinate>, input: CharGrid): Int {
+    fun checkCorners(input: CharGrid, a: Coordinate): Int {
+        val base = input[a.row][a.col]
+
+        val nb = mapOf(
+            Compass.N to input.getOrNull(a.row + Compass.N.row)?.getOrNull(a.col + Compass.N.col),
+            Compass.S to input.getOrNull(a.row + Compass.S.row)?.getOrNull(a.col + Compass.S.col),
+            Compass.E to input.getOrNull(a.row + Compass.E.row)?.getOrNull(a.col + Compass.E.col),
+            Compass.W to input.getOrNull(a.row + Compass.W.row)?.getOrNull(a.col + Compass.W.col),
+            Compass.NW to input.getOrNull(a.row + Compass.NW.row)?.getOrNull(a.col + Compass.NW.col),
+            Compass.NE to input.getOrNull(a.row + Compass.NE.row)?.getOrNull(a.col + Compass.NE.col),
+            Compass.SW to input.getOrNull(a.row + Compass.SW.row)?.getOrNull(a.col + Compass.SW.col)
+        ).mapValues { it.value == base }
+
         var count = 0
-        for (a in area) {
-            val base = input[a.row][a.col]
-            val samesies =
-                listOf(
-                    Compass.N,
-                    Compass.S,
-                    Compass.E,
-                    Compass.W,
-                    Compass.NW,
-                    Compass.NE,
-                    Compass.SW
-                )
-                    .associateBy({ it }, { (input.getOrNull(a.row + it.row)?.getOrNull(a.col + it.col) == base) })
-
-
-            if (!samesies.getValue(Compass.N) && !(samesies.getValue(Compass.W) && !samesies.getValue(Compass.NW)))
-                count += 1
-            if (!samesies.getValue(Compass.W) && !(samesies.getValue(Compass.N) && !samesies.getValue(Compass.NW)))
-                count += 1
-            if (!samesies.getValue(Compass.E) && !(samesies.getValue(Compass.N) && !samesies.getValue(Compass.NE)))
-                count += 1
-            if (!samesies.getValue(Compass.S) && !(samesies.getValue(Compass.W) && !samesies.getValue(Compass.SW)))
-                count += 1
-        }
+        if (nb[Compass.N] == false && !(nb[Compass.W] == true && nb[Compass.NW] == false)) count++
+        if (nb[Compass.W] == false && !(nb[Compass.N] == true && nb[Compass.NW] == false)) count++
+        if (nb[Compass.E] == false && !(nb[Compass.N] == true && nb[Compass.NE] == false)) count++
+        if (nb[Compass.S] == false && !(nb[Compass.W] == true && nb[Compass.SW] == false)) count++
         return count
     }
+
+    fun assembleEdges(area: Set<Coordinate>, input: CharGrid): Int = area.sumOf { checkCorners(input, it) }
 
     fun part2(input: CharGrid): Int {
         val coords = gridAsCoords(input)

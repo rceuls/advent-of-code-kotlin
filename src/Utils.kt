@@ -86,8 +86,8 @@ fun Coordinate.neighbours() =
 
 fun <T> execute(first: () -> T, second: () -> T) {
     val measure = measureTime {
-        first().println()
-        second().println()
+        first()
+        second()
     }
     "Total: $measure".prettyPrint("#FBC6CF")
 }
