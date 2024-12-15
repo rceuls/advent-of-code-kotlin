@@ -28,8 +28,7 @@ fun readInputIntGrid(name: String): IntGrid = readInput(name).map { it -> it.map
  */
 fun Any?.println() = println(this)
 
-fun Any?.prettyPrint(rgbHex: String) =
-    Terminal().println(TextColors.rgb(rgbHex)(this.toString()))
+fun Any?.prettyPrint(rgbHex: String) = Terminal().println(TextColors.rgb(rgbHex)(this.toString()))
 
 
 fun String.toNumberArray() = this.trim().split(" ").map { it.toInt() }
@@ -51,16 +50,28 @@ fun printGridWithOverlay(baseGrid: CharGrid, others: Set<Coordinate>) {
     }
 }
 
+@Suppress("unused")
+fun printCoordinates(grid: Map<Coordinate, Any>) {
+    val terminal = Terminal()
+    val rows = grid.keys.maxOfOrNull { it.row } ?: 0
+    val cols = grid.keys.maxOfOrNull { it.col } ?: 0
+    (0..rows).forEach { row ->
+        (0..cols).forEach { col ->
+            terminal.print(TextColors.brightGreen(grid[Coordinate(row, col)]!!.toString()))
+        }
+        terminal.println()
+    }
+}
+
 fun CharGrid.createCoordinateGrid(): MutableMap<Char, MutableList<Coordinate>> {
     val coordinateMap: MutableMap<Char, MutableList<Coordinate>> = mutableMapOf()
     this.forEachIndexed { row, _ ->
-        this[row]
-            .forEachIndexed { col, c ->
-                if (c != EMPTY) {
-                    coordinateMap.putIfAbsent(c, mutableListOf())
-                    coordinateMap[c]!!.add(Coordinate(row, col))
-                }
+        this[row].forEachIndexed { col, c ->
+            if (c != EMPTY) {
+                coordinateMap.putIfAbsent(c, mutableListOf())
+                coordinateMap[c]!!.add(Coordinate(row, col))
             }
+        }
     }
     return coordinateMap
 }
@@ -73,15 +84,13 @@ enum class Direction(val row: Int, val col: Int) {
 
 @Suppress("unused")
 enum class Compass(val row: Int, val col: Int) {
-    N(-1, 0), E(0, 1), S(1, 0), W(0, -1),
-    NE(-1, 1), NW(-1, -1), SE(1, 1), SW(1, -1)
+    N(-1, 0), E(0, 1), S(1, 0), W(0, -1), NE(-1, 1), NW(-1, -1), SE(1, 1), SW(1, -1)
 }
 
 
-fun Coordinate.neighbours() =
-    Direction.entries.map {
-        Coordinate(this.row + it.row, this.col + it.col)
-    }.toSet()
+fun Coordinate.neighbours() = Direction.entries.map {
+    Coordinate(this.row + it.row, this.col + it.col)
+}.toSet()
 
 
 fun <T> execute(first: () -> T, second: () -> T) {
