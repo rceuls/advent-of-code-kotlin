@@ -63,11 +63,11 @@ fun printCoordinates(grid: Map<Coordinate, Any>) {
     }
 }
 
-fun CharGrid.createCoordinateGrid(): MutableMap<Char, MutableList<Coordinate>> {
+fun CharGrid.createCoordinateGrid(includeEmpty: Boolean = false): MutableMap<Char, MutableList<Coordinate>> {
     val coordinateMap: MutableMap<Char, MutableList<Coordinate>> = mutableMapOf()
     this.forEachIndexed { row, _ ->
         this[row].forEachIndexed { col, c ->
-            if (c != EMPTY) {
+            if (includeEmpty || c != EMPTY) {
                 coordinateMap.putIfAbsent(c, mutableListOf())
                 coordinateMap[c]!!.add(Coordinate(row, col))
             }
@@ -81,6 +81,14 @@ fun CharGrid.createCoordinateGrid(): MutableMap<Char, MutableList<Coordinate>> {
 enum class Direction(val row: Int, val col: Int) {
     UP(-1, 0), RIGHT(0, 1), DOWN(1, 0), LEFT(0, -1),
 }
+
+fun Direction.opposite(): Direction =
+    when (this) {
+        Direction.UP -> Direction.DOWN
+        Direction.RIGHT -> Direction.LEFT
+        Direction.DOWN -> Direction.UP
+        Direction.LEFT -> Direction.RIGHT
+    }
 
 @Suppress("unused")
 enum class Compass(val row: Int, val col: Int) {
