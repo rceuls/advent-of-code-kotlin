@@ -100,6 +100,10 @@ fun Coordinate.neighbours() = Direction.entries.map {
     Coordinate(this.row + it.row, this.col + it.col)
 }.toSet()
 
+fun Coordinate.validNeighbours() = Direction.entries.map {
+    Coordinate(this.row + it.row, this.col + it.col)
+}.filter { it.row >= 0 && it.col >= 0 }.toSet()
+
 
 fun <T> execute(first: () -> T, second: () -> T) {
     val measure = measureTime {
