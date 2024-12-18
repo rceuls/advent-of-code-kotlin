@@ -70,39 +70,61 @@ fun main() {
             }
         }
 
-        fun reset(regA: Long = 0) {
-            output.clear()
-            registerA = regA
-            registerB = 0
-            registerC = 0
-        }
     }
 
     fun part1(machine: Machine): String = machine.runProgram().let {
         machine.output.joinToString(",")
     }
 
-    fun part2(machine: Machine): Long {
-        val from = 8.toDouble().pow(machine.operations.size - 1).toLong()
-        val to = 8.toDouble().pow(machine.operations.size).toLong()
-        "$from -> $to".println()
-        val range = to - from
-        var fullProcent = 1L
-        (from..to).reversed().forEach {
-            machine.reset(it)
-            machine.runProgram()
-            if (machine.output == machine.operations) {
-                it.println()
-                return it
+    fun part2(ops: List<Int>): Long {
+        fun List<Int>.combo(operand: Int) = if (operand in 0..3) operand else get(operand - 4)
+
+        fun rehash(p: Int, r: Long, d: Int): Long {
+            if (p < 0) return r
+            if (d > 7) return -1
+
+            val registry = mutableListOf((r shl 3).toInt() or d, 0, 0)
+            var opPointer = 0
+            var w = 0
+
+            while (opPointer < ops.size) {
+                val operation = ops[opPointer + 1]
+                val combo = registry.combo(operation)
+
+                when (ops[opPointer]) {
+                    0 -> registry[0] = registry[0] shr combo
+                    1 -> registry[1] = registry[1] xor ops[opPointer + 1]
+                    2 -> registry[1] = (combo and 7)
+                    3 -> opPointer = if (registry[0] != 0) ops[opPointer + 1] - 2 else opPointer
+                    4 -> registry[1] = registry[1] xor registry[2]
+                    5 -> {
+                        w = combo and 7
+                        break
+                    }
+                    6 -> registry[1] = registry[0] shr combo
+                    7 -> registry[2] = registry[0] shr combo
+                }
+                opPointer += 2
             }
-            if (fullProcent < it / range) {
-                fullProcent = it / range
-                "Percentage: $fullProcent".println()
+
+            if (w == ops[p]) {
+                val result = rehash(p - 1, (r shl 3) or d.toLong(), 0)
+                if (result != -1L) return result
             }
+
+            return rehash(p, r, d + 1)
         }
 
-        return 0
+        return rehash(ops.size - 1, 0, 0)
     }
+
+    val input = readInput(dayNumber)
+    val machine = Machine(
+        registerA = input[0].substringAfter("Register A: ").toLong(),
+        registerB = input[1].substringAfter("Register B: ").toLong(),
+        registerC = input[2].substringAfter("Register C: ").toLong(),
+        operations = input[4].substringAfter("Program: ").split(",").map { it.toLong() },
+    )
 
     check(
         part1(
@@ -113,9 +135,10 @@ fun main() {
     )
     check(
         part2(
-            Machine(
-                registerA = 729, registerB = 0, registerC = 0, operations = listOf(0,3,5,4,3,0)
-            )
+            listOf(0, 3, 5, 4, 3, 0)
         ) == 117440L
     )
+    part2(
+        machine.operations.map { it.toInt()}
+    ).println()
 }
