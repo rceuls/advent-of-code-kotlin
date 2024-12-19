@@ -16,11 +16,6 @@ fun main() {
     val (availableRaw, toCheckRaw) = input.split("\n\n").map(String::trim)
     val available = availableRaw.split(", ").map(String::trim)
     val toCheck = toCheckRaw.lines()
-    execute(
-        {
-            part1(toCheck, available).println()
-        },
-        {
-            part2(toCheck, available).println()
-        })
+    part1(toCheck, available).println()
+    part2(toCheck, available).println()
 }
