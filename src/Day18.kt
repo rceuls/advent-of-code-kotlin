@@ -65,7 +65,7 @@ fun main() {
             val newCoord = toPass.pop()
             allCoords.add(newCoord)
             val distance = createDistances(size, allCoords)
-            if (distance.getOrElse(Coordinate(size - 1, size - 1), { Int.MAX_VALUE }) == Int.MAX_VALUE) {
+            if (distance.getOrElse(Coordinate(size - 1, size - 1)) { Int.MAX_VALUE } == Int.MAX_VALUE) {
                 return newCoord
             }
         }
