@@ -20,8 +20,19 @@ data class Coordinate(val row: Int, val col: Int)
  */
 fun readInput(name: String) = Path("src/$name.txt").readText().trim().lines()
 fun readInputOneLine(name: String) = Path("src/$name.txt").readText().trim()
-fun readInputCharGrid(name: String): CharGrid = readInput(name).map { it -> it.toList() }
-fun readInputIntGrid(name: String): IntGrid = readInput(name).map { it -> it.map { c -> c.digitToInt() } }
+fun readInputCharGrid(name: String): CharGrid = readInput(name).map { it.toList() }
+fun readInputIntGrid(name: String): IntGrid = readInput(name).map { it.map { c -> c.digitToInt() } }
+fun readInputCoordinateGrid(name: String): Map<Coordinate, Char> {
+    val toReturn: MutableMap<Coordinate, Char> = mutableMapOf()
+    val grid = readInputCharGrid(name)
+    for (row in grid.indices) {
+        for(col in grid[row].indices) {
+            toReturn[Coordinate(row, col)] = grid[row][col]
+        }
+    }
+    return toReturn
+}
+
 
 /**
  * The cleaner shorthand for printing output.
