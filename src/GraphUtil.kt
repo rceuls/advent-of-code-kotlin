@@ -1,4 +1,5 @@
 import java.util.*
+import kotlin.math.abs
 
 fun dijkstra(graph: Map<Coordinate, List<Pair<Coordinate, Int>>>, start: Coordinate): Map<Coordinate, Int> {
     val distances = mutableMapOf<Coordinate, Int>().withDefault { Int.MAX_VALUE }
@@ -19,3 +20,5 @@ fun dijkstra(graph: Map<Coordinate, List<Pair<Coordinate, Int>>>, start: Coordin
     return distances
 }
 
+fun Coordinate.distanceTo(other: Coordinate): Int =
+    abs(row - other.row) + abs(col - other.col)
