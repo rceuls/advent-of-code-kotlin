@@ -7,13 +7,7 @@ fun main() {
     val testData = readInput("${dayNumber}_test")
     check(part1(testData) == 0)
     check(part2(testData) == 0)
-    execute(
-        {
-            val actualData = readInput(dayNumber)
-            part1(actualData).println()
-        },
-        {
-            val actualData = readInput(dayNumber)
-            part2(actualData).println()
-        })
+    val actualData = readInput(dayNumber)
+    part1(actualData).println()
+    part2(actualData).println()
 }
